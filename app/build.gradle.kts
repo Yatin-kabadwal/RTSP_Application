@@ -53,11 +53,14 @@ dependencies {
     // ExoPlayer with RTSP Support
     implementation ("androidx.media3:media3-exoplayer:1.5.1")
     implementation ("androidx.media3:media3-exoplayer-rtsp:1.5.1")
+
     implementation("com.intuit.sdp:sdp-android:1.1.1")
 
     implementation ("androidx.media3:media3-exoplayer:1.5.1")
     implementation ("androidx.media3:media3-exoplayer-rtsp:1.5.1")
     implementation ("androidx.media3:media3-ui:1.5.1")
+
+
 
 
 }

@@ -11,7 +11,9 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.rtsp.RtspMediaSource
 import androidx.media3.ui.PlayerView
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         // Initialize ExoPlayer
         player = ExoPlayer.Builder(this).build()
         playerView.player = player
-        playerView.controllerAutoShow = true // Show default controls
+        playerView.controllerAutoShow = true // hepls to Show default controls
         player.playWhenReady = true // Auto-start playback when ready
 
         btnStartStream.setOnClickListener { startStreaming() }
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         btnPause.setOnClickListener { player.pause() }
         btnStop.setOnClickListener { stopStreaming() }
 
-        // Add error listener for better error handling
+        // Adding error listener for better error handling
         player.addListener(object : Player.Listener {
             override fun onPlayerError(error: PlaybackException) {
                 Toast.makeText(this@MainActivity, "Playback error: ${error.message}", Toast.LENGTH_LONG).show()
@@ -64,11 +66,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         try {
-            // Create a MediaItem for RTSP streaming
-            val mediaItem = MediaItem.fromUri(Uri.parse(rtspUrl))
+            //here it  Create RTSP media source
+            val mediaItem = MediaItem.Builder()
+                .setUri(Uri.parse(rtspUrl))
+                .setMimeType("application/x-rtsp") //this helps to  ensure that it's RTSP type only
+                .build()
 
-            // Set the media item for the player
-            player.setMediaItem(mediaItem)
+            val mediaSource = RtspMediaSource.Factory().createMediaSource(mediaItem)
+
+            // Set media source for ExoPlayer
+            player.setMediaSource(mediaSource)
             player.prepare()
             player.play()
         } catch (e: Exception) {
@@ -76,10 +83,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun stopStreaming() {
         player.stop()
         player.clearMediaItems()
-        player.release() // Free resources properly
+        player.release() // it helps to Free resources properly
     }
 
     override fun onDestroy() {
